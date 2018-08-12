@@ -1,6 +1,6 @@
 # TableEditor - A PHP Table viewer and editor
 
-This is a modified version of Robert Hates PHP Table editor and viewer. Since the code is no longer available at the phpguru web site. I am adding the modified code here.
+This is a modified version of Robert Hayes PHP Table editor and viewer. Since the code is no longer available at the phpguru web site. I am adding the modified code here.
 
 I have also extracted from the Internet archive the guide on how to use it.
 
