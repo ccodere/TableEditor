@@ -1,0 +1,553 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+
+<body>
+<h1>MySQL Table Editor - allows you to easily<br />
+  and safely manage your MySQL data</h1>
+<ul>
+  <li><a href="#intro">Introduction</a></li>
+  <li><a href="#features">Features</a></li>
+  <li><a href="#demo">Demo</a></li>
+  <li><a href="#usage">Example Usage</a></li>
+  <li><a href="#methods">Method List</a></li>
+  <li><a href="#dependencies">Dependencies</a></li>
+  <li><a href="#translations">Translations</a></li>
+  <li><a href="#changelog">ChangeLog</a><br />
+    <br />
+  </li>
+  <li><a href="https://web.archive.org/web/20110215115547/http://www.phpguru.org/downloads/TableEditor/TableEditor.zip"><b>Download</b></a></li>
+</ul>
+<a name="intro" id="intro"></a>
+<h2>Introduction</h2>
+<p> A PHP 4 &amp; 5 library to allow easy and user-friendly editing of MySQL tables. Note this is
+  a <b>library</b> and not an application. It will be of no use unless you do some
+  coding (not exactly a great deal though - see below). </p>
+<p> <b>Note:</b> This is not meant to be an alternative or replacement to phpMyAdmin. This is something
+  you can provide to users to manage tables without them happily destroying your database. </p>
+<a name="features" id="features"></a>
+<h2>Features</h2>
+<ul>
+  <li>Now (as of 1.0.5) works with both PHP4 and PHP5</li>
+  <li>Easy setup. Give it a connection resource and a table name and it will work most things out by itself.</li>
+  <li> Search functionality (albeit basic MySQL LIKE). Can be disabled (default), and limited to certain fields only.
+    Advanced Search (version 1.0.6) can be used to search specific fields only, or with various operators (LIKE, =,
+    &gt;, &gt;=, &lt;, &lt;=). </li>
+  <li>View/Add/Copy/Edit/Delete functionality, any or all of which can be disabled.</li>
+  <li>CSV download for selected rows, current page or entire table. Can be disabled. (Version 1.0.6).</li>
+  <li>Cusomisable header/footers.</li>
+  <li> Common functionality such as date/time/timestamp catered for in dropdowns (see add/edit pages in demo).
+    Also supports adding new such functionality. </li>
+  <li>Fields can be hidden from display, editing or both.</li>
+  <li>Ordering by any column supported.</li>
+  <li>Default values for fields can be set for when adding rows.</li>
+  <li>Callbacks can be assigned to fields for pre-display manipulation (Eg. cutting long strings down).</li>
+  <li>Callbacks can be assigned to any/all of add/edit/delete actions (Eg. for logging user actions).</li>
+  <li> Can assign predetermined values to fields (Eg. showing &quot;nicer&quot; values for foreign keys). These values
+    can be supplied as an array, or from the results of an SQL query. </li>
+  <li>Multiple deletes at once support.</li>
+  <li>Paging support. Number of rows per page is configurable.</li>
+  <li>Data filter support, to allow only showing of certain rows.</li>
+  <li>Data validation callback to allow custom checking and/or manipulation of data before being added/updated.</li>
+  <li> Custom field types: password - provides a familiar two input process for setting passwords (ie. password
+    and password confirmation input boxes), email - automatically checks the data matches an email address
+    format, date, time and datetime - automatically sets the default value to the appropriate current value, and
+    adds a &quot;now&quot; link next to the input for setting the current value during add/copy/edit. </li>
+  <li>Required field support, to ensure certain fields are filled in during add/edit actions.</li>
+  <li>Caching of table data structure (so it's not worked out on every page refresh).</li>
+</ul>
+<a name="demo" id="demo"></a>
+<h2>Demo</h2>
+There's a demo <a href="https://web.archive.org/web/20110215115547/http://www.phpguru.org/TableEditor_demo.php">here</a>, and the second code listing below is the script
+that drives it. <a name="usage" id="usage"></a>
+<h2>Example Usage</h2>
+<p> The following example is used in my admin area to allow administration of comments: </p>
+<code><span style="color: #000000"> <span style="color: #0000BB">&lt;?php<br />
+</span><span style="color: #FF8000">/**<br />
+*&nbsp;Edits&nbsp;news&nbsp;table<br />
+*/<br />
+</span><span style="color: #007700">require_once(</span><span style="color: #DD0000">'TableEditor.php'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">TableEditor</span><span style="color: #007700">(</span><span style="color: #0000BB">$database</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">connection</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'comments'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">noDisplay</span><span style="color: #007700">(</span><span style="color: #DD0000">'cm_parentid'</span><span style="color: #007700">);<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">noEdit</span><span style="color: #007700">(</span><span style="color: #DD0000">'cm_parentid'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setDisplayNames</span><span style="color: #007700">(array(</span><span style="color: #DD0000">'cm_id'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'ID'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cm_neid'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Article'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cm_datetime'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Date&nbsp;Added'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cm_author'&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Author'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cm_text'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Text'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'cm_email'&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Email'</span><span style="color: #007700">));<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setDefaultOrderby</span><span style="color: #007700">(</span><span style="color: #DD0000">'cm_datetime'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">0</span><span style="color: #007700">);<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setConfig</span><span style="color: #007700">(</span><span style="color: #DD0000">'searchableFields'</span><span style="color: #007700">,&nbsp;array(</span><span style="color: #DD0000">'cm_author'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'cm_text'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'cm_email'</span><span style="color: #007700">));<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setInputType</span><span style="color: #007700">(</span><span style="color: #DD0000">'cm_neid'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'select'</span><span style="color: #007700">);<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setValuesFromQuery</span><span style="color: #007700">(</span><span style="color: #DD0000">'cm_neid'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">&quot;SELECT&nbsp;ne_id,&nbsp;ne_title&nbsp;FROM&nbsp;news&quot;</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">addDisplayFilter</span><span style="color: #007700">(</span><span style="color: #DD0000">'cm_text'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">create_function</span><span style="color: #007700">(</span><span style="color: #DD0000">'$v'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'return&nbsp;str_curtail($v,&nbsp;100);'</span><span style="color: #007700">));<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">();<br />
+</span><span style="color: #0000BB">?&gt;</span> </span> </code>
+<p> This is the <a href="https://web.archive.org/web/20110215115547/http://www.phpguru.org/TableEditor_demo.php">demo</a> script: </p>
+<code><span style="color: #000000"> <span style="color: #0000BB">&lt;?php<br />
+<br />
+</span><span style="color: #FF8000">/**<br />
+*&nbsp;Demo&nbsp;of&nbsp;TableEditor&nbsp;class.&nbsp;Uses&nbsp;the&nbsp;following&nbsp;table:<br />
+*&nbsp;<br />
+*&nbsp;CREATE&nbsp;TABLE&nbsp;`TableEditorDemo`&nbsp;(<br />
+*&nbsp;&nbsp;&nbsp;`te_id`&nbsp;int(10)&nbsp;unsigned&nbsp;NOT&nbsp;NULL&nbsp;auto_increment,<br />
+*&nbsp;&nbsp;&nbsp;`te_name`&nbsp;varchar(32)&nbsp;NOT&nbsp;NULL&nbsp;default&nbsp;'',<br />
+*&nbsp;&nbsp;&nbsp;`te_password`&nbsp;varchar(32)&nbsp;NOT&nbsp;NULL&nbsp;default&nbsp;'',<br />
+*&nbsp;&nbsp;&nbsp;`te_email`&nbsp;varchar(32)&nbsp;NOT&nbsp;NULL&nbsp;default&nbsp;'',<br />
+*&nbsp;&nbsp;&nbsp;`te_datetime`&nbsp;datetime&nbsp;NOT&nbsp;NULL&nbsp;default&nbsp;'0000-00-00&nbsp;00:00:00',<br />
+*&nbsp;&nbsp;&nbsp;`te_age`&nbsp;tinyint(3)&nbsp;unsigned&nbsp;NOT&nbsp;NULL&nbsp;default&nbsp;'0',<br />
+*&nbsp;&nbsp;&nbsp;`te_live`&nbsp;enum('LIVE','NOT&nbsp;LIVE')&nbsp;default&nbsp;NULL,<br />
+*&nbsp;&nbsp;&nbsp;`te_desc`&nbsp;mediumtext&nbsp;NOT&nbsp;NULL,<br />
+*&nbsp;&nbsp;&nbsp;PRIMARY&nbsp;KEY&nbsp;&nbsp;(`te_id`)<br />
+*&nbsp;)&nbsp;TYPE=MyISAM;<br />
+*/<br />
+<br />
+</span><span style="color: #007700">require_once(</span><span style="color: #DD0000">'TableEditor.php'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">TableEditor</span><span style="color: #007700">(</span><span style="color: #0000BB">$conn</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'TableEditorDemo'</span><span style="color: #007700">);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+</span><span style="color: #FF8000">//&nbsp;$editor-&gt;setConfig('allowView',&nbsp;false);<br />
+//&nbsp;$editor-&gt;setConfig('allowAdd',&nbsp;false);<br />
+//&nbsp;$editor-&gt;setConfig('allowEdit',&nbsp;false);<br />
+//&nbsp;$editor-&gt;setConfig('allowCopy',&nbsp;false);<br />
+//&nbsp;$editor-&gt;setConfig('allowDelete',&nbsp;false);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setConfig</span><span style="color: #007700">(</span><span style="color: #DD0000">'perPage'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">15</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setDisplayNames</span><span style="color: #007700">(array(</span><span style="color: #DD0000">'te_id'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'ID'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_name'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Name'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_password'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Password'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_email'&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Email'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_datetime'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Date&nbsp;Added'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_age'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Age'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_live'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Live'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_desc'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Description'</span><span style="color: #007700">));<br />
+<br />
+</span><span style="color: #FF8000">//&nbsp;$editor-&gt;noDisplay('te_password');<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">noEdit</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_live'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setInputType</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_password'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'password'</span><span style="color: #007700">);<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setInputType</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_email'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'email'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setSearchableFields</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_age'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_id'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_desc'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_live'</span><span style="color: #007700">);<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setRequiredFields</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_name'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_email'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_datetime'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_age'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'te_desc'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setDefaultOrderby</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_id'</span><span style="color: #007700">);<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setDefaultValues</span><span style="color: #007700">(array(</span><span style="color: #DD0000">'te_id'&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'0'</span><span style="color: #007700">,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'te_live'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'NOT&nbsp;LIVE'</span><span style="color: #007700">));<br />
+<br />
+</span><span style="color: #FF8000">//$editor-&gt;addAdditionCallback(create_function('$data',&nbsp;'foreach($data&nbsp;as&nbsp;$k&nbsp;=&gt;&nbsp;$v)&nbsp;{$body[]&nbsp;=&nbsp;&quot;$k&nbsp;=&gt;&nbsp;$v&quot;;}&nbsp;mail(&quot;joe@example.com&quot;,&nbsp;&quot;Row&nbsp;added&quot;,&nbsp;implode(&quot;\n&quot;,&nbsp;$body));'));<br />
+//$editor-&gt;addEditCallback(create_function('$data',&nbsp;'foreach($data&nbsp;as&nbsp;$k&nbsp;=&gt;&nbsp;$v)&nbsp;{$body[]&nbsp;=&nbsp;&quot;$k&nbsp;=&gt;&nbsp;$v&quot;;}&nbsp;mail(&quot;joe@example.com&quot;,&nbsp;&quot;Row&nbsp;edited&quot;,&nbsp;implode(&quot;\n&quot;,&nbsp;$body));'));<br />
+//$editor-&gt;addCopyCallback(create_function('$data',&nbsp;'foreach($data&nbsp;as&nbsp;$k&nbsp;=&gt;&nbsp;$v)&nbsp;{$body[]&nbsp;=&nbsp;&quot;$k&nbsp;=&gt;&nbsp;$v&quot;;}&nbsp;mail(&quot;joe@example.com&quot;,&nbsp;&quot;Row&nbsp;copied&quot;,&nbsp;implode(&quot;\n&quot;,&nbsp;$body));'));<br />
+//$editor-&gt;addDeleteCallback(create_function('$data',&nbsp;'foreach($data&nbsp;as&nbsp;$k&nbsp;=&gt;&nbsp;$v)&nbsp;{$body[]&nbsp;=&nbsp;&quot;$k&nbsp;=&gt;&nbsp;$v&quot;;}&nbsp;mail(&quot;joe@example.com&quot;,&nbsp;&quot;Row&nbsp;deleted&quot;,&nbsp;implode(&quot;\n&quot;,&nbsp;$body));'));<br />
+<br />
+</span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">validateAge</span><span style="color: #007700">(&amp;</span><span style="color: #0000BB">$obj</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">=&nbsp;(int)</span><span style="color: #0000BB">$data</span><span style="color: #007700">;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">&lt;&nbsp;</span><span style="color: #0000BB">18&nbsp;</span><span style="color: #007700">OR&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">&gt;&nbsp;</span><span style="color: #0000BB">80</span><span style="color: #007700">)&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$obj</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">addError</span><span style="color: #007700">(</span><span style="color: #DD0000">'Invalid&nbsp;age!&nbsp;Please&nbsp;enter&nbsp;an&nbsp;age&nbsp;between&nbsp;18&nbsp;and&nbsp;80'</span><span style="color: #007700">);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">;<br />
+}<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">addValidationCallback</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_age'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'validateAge'</span><span style="color: #007700">);<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">addDisplayFilter</span><span style="color: #007700">(</span><span style="color: #DD0000">'te_desc'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">create_function</span><span style="color: #007700">(</span><span style="color: #DD0000">'$v'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'return&nbsp;substr($v,&nbsp;0,&nbsp;100)&nbsp;.&nbsp;&quot;...&quot;;'</span><span style="color: #007700">));<br />
+<br />
+</span><span style="color: #0000BB">$editor</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">display</span><span style="color: #007700">();<br />
+<br />
+</span><span style="color: #0000BB">?&gt;</span> </span> </code> <a name="methods" id="methods"></a>
+<h2>Public Method List</h2>
+<p> The following are the public methods of the object which can be used to manipulate
+  the gui: </p>
+<ul>
+  <li> <b>Constructor(resource database_connection, string table_name)</b><br />
+    Pass two things to the constructor: your MySQL database connection resource, and also the name
+    of the table you wish to be edited. <br />
+    <br />
+  </li>
+  <li> <b>addError(string error_msg)</b><br />
+    Used to add errors to be displayed. Commonly used from within data validation callbacks. This adds
+    a general error which is displayed at the top of the screen. <br />
+    <br />
+  </li>
+  <li> <b>setContextualError(string field_name, string error_msg)</b><br />
+    Used to add errors to be displayed. Commonly used from within data validation callbacks. This adds
+    a contextual error which is displayed next to the appropriate field on the add/edit/copy pages. <br />
+    <br />
+  </li>
+  <li> <b>setConfig(string name, mixed value)</b><br />
+    This allows you to set any of the valid configuration parameters. These currently
+    are:
+    <table cellspacing="0" border="1">
+      <tbody>
+        <tr>
+          <th>Name</th>
+          <th>Details</th>
+        </tr>
+        <tr>
+          <td>perPage</td>
+          <td>Defines how many rows of data to show per page. This is an integer.</td>
+        </tr>
+        <tr>
+          <td>allowPKEditing</td>
+          <td> Determines whether to allow editing of the primary key. This defaults to false.
+            As of 11th April 2005 this is slightly buggy when set to true. This is a boolean. </td>
+        </tr>
+        <tr>
+          <td>useFunctions</td>
+          <td>Whether to use the built in functions on the adding/editing pages. Defaults to false. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>functions</td>
+          <td> An array of built in functions to facilitate easy entering of things like md5 hashes, current
+            date and/or time etc. This is an associative array where the key is what's displayed on the add/edit
+            page, and the value is a valid PHP callback which returns the desired value. Any value entered
+            by the user on the add/edit page is passed to the callback as an argument. </td>
+        </tr>
+        <tr>
+          <td>allowView</td>
+          <td>Whether to allow viewing of rows. Defaults to allowed. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>allowAdd</td>
+          <td>Whether to allow adding of rows. Defaults to allowed. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>allowCopy</td>
+          <td>Whether to allow copying of rows. Defaults to allows. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>allowEdit</td>
+          <td>Whether to allow editing of rows. Defaults to allowed. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>allowDelete</td>
+          <td>Whether to allow deletion of rows. Defaults to allowed. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>allowASearch</td>
+          <td>Whether to allow use of the advanced search. Defaults to allowed. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>allowCSV</td>
+          <td>Whether to allow CSV downloads. Defaults to allowed. This is a boolean.</td>
+        </tr>
+        <tr>
+          <td>headerfile</td>
+          <td> Don't like my header? Use this to define an external file to use instead. All CSS will
+            have to be defined or it will look... well... ugly. This is a string. </td>
+        </tr>
+        <tr>
+          <td>footerfile</td>
+          <td>As above but for the footer. This is a string.</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <br />
+  </li>
+  <li> <b>getConfig(string name)</b><br />
+    Retrieve one of the various configuration options. See setConfig(). <br />
+    <br />
+  </li>
+  <li> <b>setSearchableFields(string field_name [, ...])</b><br />
+    One or more field names which are allowed to be searched on. When using the setValuesFrom*() methods,
+    the displayed values are searched, not the values in the database. This should make it more intuitive
+    for the user. These searchable fields also apply to the advanced search. <br />
+    <br />
+  </li>
+  <li> <b>setRequiredFields(string field_name [, ...])</b><br />
+    One or more field names which are required to be entered (ie not left blank) on the add/copy/edit pages. <br />
+    <br />
+  </li>
+  <li> <b>setDefaultOrderby(string field [, integer direction])</b><br />
+    Use this to set the initial ordering of the data displayed. Pass in the fieldname to the function, and
+    optionally a direction (1 = ascending, 0 = descending). <br />
+    <br />
+  </li>
+  <li> <b>setDefaultValues(array default_values)</b><br />
+    Use this to set default values when adding new records. You can set default values here for fields that
+    aren't shown to the user on the add page (Eg. You might want to set new records to &quot;not live&quot; until moderated). <br />
+    <br />
+  </li>
+  <li> <b>setDisplayName(array display_names)</b><br />
+    This will probably be the most commonly used function. It allows you to display user friendly column names
+    instead of the actual column names. Pass in an associative array of which the key should be the actual
+    column name, and the value should be the display name. <br />
+    <br />
+  </li>
+  <li> <b>setValuesFromQuery(string field_name, string query)</b><br />
+    If you have foreign keys in your table, and instead of displaying the value in the table, you want to display
+    the value in the &quot;other&quot; table, then you can use this to grab the values from the other table. The query should
+    return two columns, the first should be the value which is in the table being edited, and the second should be
+    the value which you wish to be displayed. <br />
+    <br />
+  </li>
+  <li> <b>setValuesFromArray(string field_name, array values)</b><br />
+    This is similar to the above, except that instead of a query, you supply a predetermined array of the values. The array
+    should be associative with the keys being the values stored in the table being edited, and the values (of the array)
+    being the values you want to be displayed. <br />
+    <br />
+  </li>
+  <li> <b>setInputType(string field_name, string input_type)</b><br />
+    Commonly used with one of the above two methods. You can use this function to set the input type shown on the add/edit
+    pages. In use with the above two functions you would set the input type to 'select', so that only one of the
+    preset values can be entered. An example is listed above in the comments script where the type is set to 'select' and
+    the values are set to the news article titles. <br />
+    <br />
+  </li>
+  <li> <b>noDisplay(string field_name [, ...])</b><br />
+    Use this function to prevent the display of fields. You can supply one or more field names to the function. This
+    will not hide the fields from the add/edit pages, use the noEdit() method for that. <br />
+    <br />
+  </li>
+  <li> <b>noEdit(string field_name [, ...])</b><br />
+    If you wish to display a field, but not allow its editing, then use this function. Like the above, you can supply
+    one or more field names to it. <br />
+    <br />
+  </li>
+  <li> <b>onlyDisplay(string field_name [, ...])</b><br />
+    Use this function to set the fields which will be displayed. Only those specified will be displayed, any others will
+    be set to be hidden. <br />
+    <br />
+  </li>
+  <li> <b>onlyEdit(string field_name [, ...])</b><br />
+    Use this function to set the fields which will be editable. Only those specified will be editable, any others will
+    be set to be hidden. <br />
+    <br />
+  </li>
+  <li> <b>addDataFilter(string clause [, ...])</b><br />
+    Adds a data filter. Works purely during display, not add/edit. You should supply one or more valid SQL
+    WHERE clauses which produce the desired results. Eg. addDataFilter(&quot;te_desc != ''&quot;, &quot;te_email != ''&quot;) <br />
+    <br />
+  </li>
+  <li> <b>addDisplayFilter(string field_name, callback callback)</b><br />
+    This function can be used to manipulate the table data before 
+    it's displayed. One example as shown above in the first
+    code listing is to prevent the full display of text fields. The 
+    function in the listing str_curtail() is a user
+    function which cuts off text after the specified number of 
+    characters (though will not cut off mid-word), and then
+    appends &quot;...&quot;. The value of the field is passed as an argument 
+    to the callback, and the callback should return the result. <br />
+    <br />
+  </li>
+  <li> <b>addValidationCallback(string field_name, callback callback)</b><br />
+    Adds a data validation callback to the given field name. These are run after functions, defaults,
+    required field checks and pseudo-field validation checks. Using these you can add your
+    own validation checks before data is added/updated in the database. These callbacks
+    may also modify the data (eg. md5()ing a password). Now these are added, functions
+    default to off since they're pretty much redundant.<br />
+    <br />
+    The callback must:
+    <ul>
+      <li> Accept two arguments: the first is the TableEditor object, and the second is the data to validate. It
+        is important for error handling purposes that the first argument is passed by reference. This is only
+        an issue if you're using PHP4. </li>
+      <li> Return the value which is to be inserted into the database. This is to allow modification of data
+        before insertion. You can of course return the supplied data untouched if you only wish to validate it. </li>
+      <li> Call the addError() method on the TableEditor object if an error occurs to register the error.
+        The error should naturally be descriptive. </li>
+    </ul>
+    <br />
+    <br />
+  </li>
+  <li> <b>addAdditionCallback(callback callback)</b><br />
+    This function can be used to specify a callback function that should be run on the successful addition of a new
+    record. The new data that has been added is passed as an argument to the callback. This could be used if you wish
+    to log actions performed by a user. You can call this function multiple times to add more than one callback. <br />
+    <br />
+  </li>
+  <li> <b>addCopyCallback(callback callback)</b><br />
+    As above but for copies. <br />
+    <br />
+  </li>
+  <li> <b>addEditCallback(callback callback)</b><br />
+    As above but for edits. <br />
+    <br />
+  </li>
+  <li> <b>addDeleteCallback(callback callback)</b><br />
+    As above but for deletes. <br />
+    <br />
+  </li>
+  <li> <b>display()</b><br />
+    Call this after you've configured the object to display the page. <br />
+    <br />
+  </li>
+</ul>
+<a name="dependencies" id="dependencies"></a>
+<h2>Dependencies</h2>
+<ul>
+  <li> The PEAR package &quot;Pager&quot; must be installed and available via the include_path, a relatively recent
+    version that supports &quot;Pager_Sliding&quot; must be used. </li>
+  <li>The PEAR package &quot;Net_URL&quot; must be installed and available via the include_path.</li>
+</ul>
+<a name="translations" id="translations"></a>
+<h2>Translations</h2>
+<p> There's a german translation in the archive that someone has kindly provided (sorry - I don't have your name any more)
+  I haven't tested this, so you have been warned! </p>
+<a name="contrib" id="contrib"></a>
+<h2>User contributions</h2>
+<p> This is a version of the TableEditor that has been converted to use the PEAR::DB library and kindly contributed contributed
+  by a user: </p>
+<ul>
+  <li><a href="https://web.archive.org/web/20110215115547/http://www.phpguru.org/downloads/TableEditor/TableEditor_Pear-DB.phps">TableEditor_Pear-DB.php</a></li>
+</ul>
+The code to instantiate this is thus:
+<pre class="code">&lt;?php
+    require_once(&quot;DB.php&quot;);
+    require_once(&quot;TableEditor.php&quot;);
+    
+    // Connect to DB
+    $dbInfo = get_cfg_var('systemDBInfo');
+    $db = DB::connect($dbInfo);
+    if (PEAR::isError($db)) {
+        echo &quot;An error occurred while trying to connect to the database server.&lt;br&gt;\n&quot;;
+        echo &quot;Error message: &quot; . $theDB-&gt;getMessage() . &quot;&lt;br&gt;\n&quot;;
+        echo &quot;A more detailed error description: &quot; .
+        $theDB-&gt;getDebugInfo() . &quot;&lt;br&gt;\n&quot;;
+    }
+    
+    $editor = new TableEditor($db, 'sometable');
+?&gt;
+</pre>
+<a name="changelog" id="changelog"></a>
+<h2>ChangeLog</h2>
+<pre style="width: 578px; overflow: auto; border: 1px black dashed; padding: 3px">16th June 2005 (1.0.6)
+==============
+
+ o Fixed bug when not displaying primary key field.
+ o Fixed javascript bug in FireFox when selecting records.
+ o Added CSV download option. Can download either the selected records, the current
+   page or the entire table. Works well with searching too (ie. you can download the
+   current page even if it's a search result). There's a callback available to
+   override which escapes a single field of CSV data. The built in escape function
+   replaces carriage returns and line feeds with \r and \n respectively. It also
+   escapes commas with a backslash.
+ o Added advanced search capabilities
+
+
+26th April 2005 (1.0.5)
+===============
+
+ o Added support for join tables. Using these you can join the main table onto other
+   tables to retrieve columns from the &quot;other&quot; tables. When using join tables add
+   copy and delete functionality is automatically disabled, however edits can still
+   take place.
+ o Added two new methods, onlyDisplay() and onlyEdit(). As the names suggest these
+   methods set all fields to be hidden except those specified. Useful if you join
+   onto tables and end up having to hide lots of columns.
+ o Backported to PHP4. Be careful with references when using data validation callbacks.
+
+
+19th April 2005 (1.0.4)
+===============
+
+ o Added support for a &quot;bitmask&quot; type. Descriptive values need to be set using the
+   setValuesFrom*() methods. On the add/edit pages, this type is shown as a multiple
+   select. The corresponding type in MySQL is a SET, however you could just as easily
+   use an int.
+ o Added a &quot;Set blank password&quot; checkbox to the &quot;password&quot; pseudo input, to allow
+   setting of a blank password.
+ o Changed field specific errors on add/editcopy page to be next to their respective
+   fields. There's now a new method called setContextualError() to allow setting of
+   these errors from data validation callbacks.
+
+
+17th April 2005 (1.0.3)
+===============
+
+ o Fixed a bug which made multiple display filters on a column not work correctly.
+ o Search now highlights found terms. Does this by applying a display filter to each
+   searchable colum, which is applied *after* any user defined display filters.
+
+
+15th April 2005 (1.0.2)
+===============
+
+ o No longer classed as beta, (well, by me at least... ).
+ o When using the view button, fields with preset values are now shown
+   as they are on the main table page.
+ o Fixed a bug which meant edit was disabled when view was, and couldn't be
+   disabled by itself.
+ o Fixed redirection bug with urls.
+ o Fixed leading zeros being removed when inserting purely numeric values into
+   a text based field type.
+ o Added row copying functionality.
+ o Added data filters via addDataFilter() method to facilitate the
+   showing/viewing/editing/deleting of only certain rows
+ o Table structure is now no longer determined on each and every page refresh, but
+   is cached in the session.
+ o New method: setSearchableFields(). To be used instead of setConfig('searchableFields').
+   Supply one or more field names which are allowed to be searched.
+ o Added support for required fields when adding/editing/copying. If a required field is
+   not filled in, an error is displayed.
+ o Added support for pseudo input types:
+    o password  This shows two password inputs on the add/edit page. If when
+                submitted the two do not match, an error is displayed. However,
+                if the two are left blank/empty, the field is not updated. This
+                is to allow updates to rows without changing the password field.
+                You can alter this behaviour by stipulating the field to be
+                required.
+    o email     This shows a regular text input, however it automatically checks
+                whatever contents are supplied and ensures it matches the form of
+                an email address. If however the field is empty, no error is
+                raised. You can alter this behaviour by stipulating the field to
+                be required.
+ o Added support for data validation callbacks. These are run after functions, defaults,
+   required field checks and pseudo field validation checks. Using these you can add your
+   own validation checks before data is added/updated in the database. These callbacks
+   may also modify the data (eg. md5()ing a password). Now these are added, functions
+   default to off since along with default values functions are pretty much redundant.
+ o Added handling for magic_quotes_gpc
+
+
+14th April 2005 (1.0.1-beta)
+===============
+
+ o Changed aesthetics for shameful self promotion
+ o noDisplay() method now only hides a field from display, not editing. Use
+   noEdit() in combination to hide a field from editing too.
+ o Renamed defaultOrderby() to setDefaultOrderby()
+ o Fixed a number of E_NOTICE errors
+ o Added setDefaultValues(), which sets default values when adding rows. Can
+   be used with fields that aren't editable.
+ o Added add/edit/delete callback function support via addAdditionCallback(),
+   addEditCallback() and addDeleteCallback() methods. The callbacks are run when
+   each appropriate action is taken.
+ o Added ability to search fields which have their values preset with the
+   setValuesFrom* methods.
+ o Changed to using a single checkbox per row, and a single set of add/edit/delete
+   buttons. Can now delete multiple rows at once.
+ o Added View button, for viewing a row in full on it's own page.
+ o Added support for external header and footer files. Changing the header will lose
+   all CSS so you'll have to define your own.
+ o You can now disable any/all of the view/add/edit/delete buttons.
+
+
+11th April 2005 (1.0.0-beta)
+===============
+
+ o Initial release</pre>
+<!-- -->
+<br clear="all" />
+<br />
+<a name="rgraph" id="rgraph"></a>
+<fieldset>
+  <legend>
+</fieldset>
+</body>
+</html>

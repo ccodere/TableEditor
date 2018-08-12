@@ -1,0 +1,32 @@
+@page { size: 21.59cm 27.94cm }
+H1 { border-top: thin solid black; border-bottom: thin solid black; border-left: none; border-right: none; padding: 0.05cm 0cm; color: black; font-family: "Georgia", "Tahoma", "Arial", "Helvetica"; text-align: center }
+H2 { border: none; padding: 0cm; color: black; font-family: "Verdana", "Georgia", "Tahoma", "Arial", "Helvetica" }
+H3 { border: none; padding: 0cm; color: black; font-family: "Georgia", "Tahoma", "Arial", "Helvetica" }
+P { margin-bottom: 0cm; color: black }
+P.western { font-family: "Georgia", serif }
+P.menu { border: 1px solid black; padding: 0.05cm; font-family: "Verdana", "Arial", "Helvetica" }
+P.lastmod { border-top: 1px solid black; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm; font-family: "Georgia", serif; text-align: center }
+P.copyright { font-family: "Georgia", serif; text-align: center }
+A:link { color: blue }
+A.external { color: red }
+A:visited { color: purple }
+A:hover { background: yellow }
+		
+
+PRE { BACKGROUND-COLOR: #efefef; BORDER-BOTTOM: black thin solid; BORDER-LEFT: black thin solid; BORDER-RIGHT: black thin solid; BORDER-TOP: black thin solid; MARGIN-LEFT: 2em; PADDING-BOTTOM: 1em; PADDING-LEFT: 1em; PADDING-RIGHT: 1em; PADDING-TOP: 1em }
+BODY { BACKGROUND: #ffffff; COLOR: black; FONT-FAMILY: Georgia,Tahoma,Verdana,Helvetica,Arial; PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px; empty-cells: show }
+.leftcolumn { FLOAT: left; LEFT: 1%; WIDTH: 48% }
+.rightcolumn { FLOAT: right; WIDTH: 48% }
+TH { font-family: "Tahoma", Serif; font-weight: bold;  }
+TD { font-family: "Tahoma", Serif; padding-left: 0.2em; padding-right: 0.2em }
+P { PADDING-LEFT: 0.5em; max-width: 70em }
+DL { MARGIN-LEFT: 0.2em }
+DD { font-family: "Georgia", serif }
+DT { font-family: "Georgia", serif; font-weight: bold }
+P.url { FONT-FAMILY: Courier }
+P.quotetxt { FONT-STYLE: italic; MARGIN-BOTTOM: 0.3em; MARGIN-RIGHT: 2em; TEXT-ALIGN: right }
+P.quotesrc { FONT-SIZE: smaller; MARGIN-BOTTOM: 2em; MARGIN-RIGHT: 3em; MARGIN-TOP: 0.3em; TEXT-ALIGN: right }
+P.updated { FONT-SIZE: smaller; FONT-STYLE: italic; TEXT-ALIGN: right }
+P.toc { TEXT-ALIGN: center }
+DIV#leftmenu { BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px; BORDER-TOP-WIDTH: 0px; LEFT: 0px; MARGIN: 1em; PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px; POSITION: absolute; TEXT-ALIGN: right; TOP: 5em; WIDTH: 23% }
+DIV#main { LEFT: 25%; MARGIN: 1em; PADDING-BOTTOM: 1em; PADDING-LEFT: 1.5em; PADDING-RIGHT: 1.5em; PADDING-TOP: 1em; POSITION: absolute; TOP: 5em; WIDTH: auto }
